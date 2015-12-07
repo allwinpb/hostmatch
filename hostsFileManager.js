@@ -60,6 +60,14 @@ var hostsFileManager = function(filename){
           return mapped != false;
         })
       return validDomains;
+    },
+    domains: function(){
+      var domainList = this.list();
+      var domainDict = {};
+      for(var i=0; i<domainList.length; i++){
+        domainDict[domainList[i].domain] = domainList[i];
+      }
+      return domainDict;
     }
   }
   fileManager.read();
