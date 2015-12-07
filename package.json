@@ -4,7 +4,8 @@
   "description": "Hostmatch is a command-line application to match individual webservers running locally with a sufficiently named hostname for easier development",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "sudo node server.js"
   },
   "keywords": [
     "host",
@@ -12,5 +13,9 @@
     "webserver"
   ],
   "author": "allwinpb@gmail.com",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "commander": "^2.9.0",
+    "http-proxy": "^1.12.0"
+  }
 }
