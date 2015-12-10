@@ -22,9 +22,9 @@ var router = http.createServer(function(req, res){
       try{
         httpProxy.web(req, res, {target: 'http://localhost:' + port});
       }catch(e){
-        
+
       }
-      console.log(req.headers.host + " --> " + 'http://localhost:' + port);
+      console.log(req.headers.host + " --> " + 'localhost:' + port);
     }
   }else{
     res.end(req.headers.host);
