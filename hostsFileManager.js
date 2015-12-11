@@ -88,7 +88,7 @@ var hostsFileManager = function(filename){
           var domain = line[1];
           if(domain == targetDomain){
             content.splice(i,1);
-            break;
+            i--;
           }
         }
       }
