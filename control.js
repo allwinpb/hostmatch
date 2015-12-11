@@ -11,7 +11,10 @@ parser
   .action(function(command){
     // console.log(command.parent.hosts)
     var domainlist = hostManager(command.parent.hosts).list()
-    console.log(domainlist);
+    domainlist.map(function(mapped){
+      if(mapped.type == "PORT")
+        console.log(mapped.domain, "-->", "127.0.0.1:" + mapped.target)
+    })
   })
 
 parser
