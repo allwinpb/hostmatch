@@ -25,6 +25,7 @@ var hostsFileManager = function(filename){
       return content;
     },
     list: function(){
+      this.read();
       var validDomains = content
         .filter(function(line){
           return line.startsWith('127.0.0.1')
@@ -53,7 +54,7 @@ var hostsFileManager = function(filename){
           }else{
             return false;
           }
-          mapped.target = matched[1].trim()
+          mapped.target = matched[1].trim();
           return mapped;
         })
         .filter(function(mapped){
@@ -68,9 +69,37 @@ var hostsFileManager = function(filename){
         domainDict[domainList[i].domain] = domainList[i];
       }
       return domainDict;
+    },
+    write: function(){
+      fs.writeFileSync(filename, content.join(os.EOL), 'utf8');
+    },
+    add: function(domain, type, target){
+      this.read();
+      if(!target){
+        // PORT is the default type
+        target = type;
+        type = "PORT";
+      }
+      // TODO: What if the domain already exists in the hosts file?
+      var domainString = "127.0.0.1 " + domain + " # " + type + " " + target;
+      content.push(domainString);
+      this.write();
+    },
+    remove: function(targetDomain){
+      this.read();
+      for(var i=0; i<content.length; i++){
+        if(content[i].startsWith("127.0.0.1")){
+          var line = content[i].split(/\s+/);
+          var domain = line[1];
+          if(domain == targetDomain){
+            content.splice(i,1);
+            break;
+          }
+        }
+      }
+      this.write();
     }
   }
-  fileManager.read();
   return fileManager;
 }
 
