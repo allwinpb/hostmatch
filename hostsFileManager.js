@@ -75,11 +75,6 @@ var hostsFileManager = function(filename){
     },
     add: function(domain, type, target){
       this.read();
-      if(!target){
-        // PORT is the default type
-        target = type;
-        type = "PORT";
-      }
       // TODO: What if the domain already exists in the hosts file?
       var domainString = "127.0.0.1 " + domain + " # " + type + " " + target;
       content.push(domainString);

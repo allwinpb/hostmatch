@@ -21,7 +21,7 @@ parser
   .command('add <domain> <port>')
   .description('Add a new domain matched to [port]')
   .action(function(domain, port, command){
-    hostManager(command.parent.hosts).add(domain, port);
+    hostManager(command.parent.hosts).add(domain, "PORT", port);
   })
 
 parser
