@@ -23,9 +23,7 @@ var router = http.createServer(function(req, res){
       var port = matches[req.headers.host].target;
       try{
         httpProxy.web(req, res, {target: 'http://localhost:' + port});
-      }catch(e){
-
-      }
+      }catch(e){}
       console.log(req.headers.host + " --> " + 'localhost:' + port);
     }
   }else{
@@ -43,8 +41,11 @@ router.on('error', function(e){
     console.log(e.name + '\t' + e.message);
   }
 });
-fs.writeFileSync(__dirname + '/server.pid',process.pid);
-router.listen(80);
+
+fs.writeFileSync(__dirname + '/server.pid', process.pid);
+router.listen(80, function(){
+  process.setuid && process.setuid(502);
+});
 
 function exitHandler(code){
   if(fs.existsSync(__dirname + '/server.pid'))
