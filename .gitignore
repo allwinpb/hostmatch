@@ -1,3 +1,4 @@
 node_modules
 *.log
 sample_hosts
+*.pid

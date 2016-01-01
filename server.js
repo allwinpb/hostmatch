@@ -1,4 +1,5 @@
 var parser = require('commander');
+var fs = require('fs');
 var httpProxy = require('http-proxy').createProxyServer({});
 
 parser
@@ -9,6 +10,7 @@ parser
 var hostManager = require('./hostsFileManager.js')(parser.hosts);
 
 var http = require('http');
+
 var matches;
 
 function refreshHosts(){
@@ -33,5 +35,23 @@ var router = http.createServer(function(req, res){
 });
 
 refreshHosts();
+router.on('error', function(e){
+  if(e.message.indexOf('EACCES') != -1){
+    console.log('Inadequate permissions to open port 80.');
+    console.log('Please run using administrator privileges.');
+  }else{
+    console.log(e.name + '\t' + e.message);
+  }
+});
+fs.writeFileSync(__dirname + '/server.pid',process.pid);
 router.listen(80);
-console.log("Routing Server running...")
+
+function exitHandler(code){
+  if(fs.existsSync(__dirname + '/server.pid'))
+    fs.unlinkSync(__dirname + '/server.pid');
+  process.exit(code);
+}
+process.on('exit', exitHandler);
+process.on('SIGINT', exitHandler);
+process.on('SIGTERM', exitHandler);
+process.on('uncaughtException', exitHandler);
