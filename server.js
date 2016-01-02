@@ -18,6 +18,7 @@ function refreshHosts(){
 }
 
 var router = http.createServer(function(req, res){
+  refreshHosts();
   if(req.headers.host in matches){
     if(matches[req.headers.host].type == "PORT"){
       var port = matches[req.headers.host].target;
@@ -35,15 +36,17 @@ var router = http.createServer(function(req, res){
 refreshHosts();
 router.on('error', function(e){
   if(e.message.indexOf('EACCES') != -1){
-    console.log('Inadequate permissions to open port 80.');
-    console.log('Please run using administrator privileges.');
+    console.error('Inadequate permissions to open port 80.');
+    console.error('Please run using administrator privileges.');
   }else{
-    console.log(e.name + '\t' + e.message);
+    console.error(e.name + '\t' + e.message);
   }
 });
 
 fs.writeFileSync(__dirname + '/server.pid', process.pid);
+
 router.listen(80, function(){
+  console.log('Hostmatch proxy running at port 80');
   process.setuid && process.setuid(502);
 });
 

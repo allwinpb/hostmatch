@@ -45,15 +45,27 @@ parser
       return;
     }
     var spawn = require('child_process').spawn;
+    out = fs.openSync('./out.log', 'a'),
+    err = fs.openSync('./out.log', 'a');
     var child = spawn(
       process.execPath,
       [__dirname + '/server', '-H', command.parent.hosts || ''],
       {
         detached: true,
-        stdio: 'ignore'
+        // stdio: ['ignore', out, err]
       }
     );
-    child.unref();
+    child.stderr.on('data', function(data){
+      console.log(data.toString().trim());
+    });
+    child.stderr.on('end', function(){
+      child.unref();
+      process.exit(0);
+    });
+    child.stdout.on('data', function(){
+      child.unref();
+      process.exit(0);
+    });
   })
 
 parser
