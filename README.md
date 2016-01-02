@@ -16,6 +16,6 @@ needs to open port 80) as well as adding or removing domains (involves editing t
 `hostmatch status` - Displays the current status of the routing server  
 `hostmatch list` - List all the active matches  
 `hostmatch add <domain> <port>` - Match domain to local server at port  
-`hostmatch rm <domain>` - Remove domain
+`hostmatch remove <domain>` - Remove domain
 
 `hostmatch` is also aliased to `hm`.
