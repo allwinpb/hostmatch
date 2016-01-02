@@ -1,3 +1,4 @@
+#!/usr/bin/env node
 var parser = require('commander');
 var hostManager = require('./hostsFileManager');
 var fs = require('fs');
