@@ -22,10 +22,15 @@ var router = http.createServer(function(req, res){
   if(req.headers.host in matches){
     if(matches[req.headers.host].type == "PORT"){
       var port = matches[req.headers.host].target;
-      try{
-        httpProxy.web(req, res, {target: 'http://localhost:' + port});
-      }catch(e){}
-      console.log(req.headers.host + " --> " + 'localhost:' + port);
+      httpProxy.web(req, res, {target: 'http://localhost:' + port}, function(e){
+        if(e.message.indexOf('ECONNREFUSED') != -1){
+          console.error('Unable to access local webserver at port ' + port);
+        }else{
+          console.error(e.name + '\t' + e.message);
+        }
+        res.end('ERROR: Unable to access local webserver at port ' + port);
+      });
+      // console.log(req.headers.host + " --> " + 'localhost:' + port);
     }
   }else{
     res.end(req.headers.host);
