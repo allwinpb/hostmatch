@@ -24,9 +24,9 @@ var router = http.createServer(function(req, res){
       var port = matches[req.headers.host].target;
       httpProxy.web(req, res, {target: 'http://localhost:' + port}, function(e){
         if(e.message.indexOf('ECONNREFUSED') != -1){
-          console.error('Unable to access local webserver at port ' + port);
+          console.log('Unable to access local webserver at port ' + port);
         }else{
-          console.error(e.name + '\t' + e.message);
+          console.log(e.name + '\t' + e.message);
         }
         res.end('ERROR: Unable to access local webserver at port ' + port);
       });
@@ -41,10 +41,10 @@ var router = http.createServer(function(req, res){
 refreshHosts();
 router.on('error', function(e){
   if(e.message.indexOf('EACCES') != -1){
-    console.error('Inadequate permissions to open port 80.');
-    console.error('Please run using administrator privileges.');
+    console.log('Inadequate permissions to open port 80.');
+    console.log('Please run using administrator privileges.');
   }else{
-    console.error(e.name + '\t' + e.message);
+    console.log(e.name + '\t' + e.message);
   }
 });
 

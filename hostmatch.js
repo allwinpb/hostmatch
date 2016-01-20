@@ -45,27 +45,26 @@ parser
       return;
     }
     var spawn = require('child_process').spawn;
-    out = fs.openSync('./out.log', 'a'),
-    err = fs.openSync('./out.log', 'a');
+    var out = fs.openSync('./out.log', 'a');
+    var err = fs.openSync('./out.log', 'a');
+
     var child = spawn(
       process.execPath,
       [__dirname + '/server', '-H', command.parent.hosts || ''],
       {
         detached: true,
-        // stdio: ['ignore', out, err]
+        stdio: [ 'ignore', out, err ]
       }
     );
-    child.stderr.on('data', function(data){
-      console.log(data.toString().trim());
-    });
-    child.stderr.on('end', function(){
-      child.unref();
-      process.exit(0);
-    });
-    child.stdout.on('data', function(){
-      child.unref();
-      process.exit(0);
-    });
+    child.unref();
+    setTimeout(function(){
+      try{
+        fs.accessSync(__dirname + '/server.pid');
+      } catch(e){
+        console.log('Unable to start the routing server for some reason.')
+        console.log('Are you sure you are root?')
+      }
+    },500)
   })
 
 parser
