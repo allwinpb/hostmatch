@@ -9,6 +9,12 @@ For example,
 It achieves this by running its own proxy server locally at port 80. Administrator privileges are required to start the proxy server (it
 needs to open port 80) as well as adding or removing domains (involves editing the hosts file).
 
+## Installation
+
+`npm install -g hostmatch`
+
+It should work in both Windows and POSIX based systems.
+
 ## Commands
 
 `hostmatch start` - Start the proxy server at port 80  
