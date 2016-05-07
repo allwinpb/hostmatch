@@ -3,20 +3,7 @@ var parser = require('commander');
 var hostManager = require('./hostsFileManager');
 var fs = require('fs');
 
-var checkPidFile = require('./utility').checkPidFile;
-
-// function startServer(command){
-//   var spawn = require('child_process').spawn;
-//   var child = spawn(
-//     process.execPath,
-//     [__dirname + '/server', '-H', command.parent.hosts || ''],
-//     {
-//       detached: true,
-//       stdio: 'ignore'
-//     }
-//   );
-//   child.unref();
-// }
+var getProcessPid = require('./utility').getProcessPid;
 
 parser
   .version('0.1.0')
@@ -26,9 +13,10 @@ parser
   .command('status')
   .description('Check the status of the server')
   .action(function(command){
-    var pid = checkPidFile();
+    var pid = getProcessPid();
     if(pid){
       console.log('Hostmatch Routing Server running with PID: ' + pid + '.');
+      return;
     }else{
       console.log('Hostmatch Routing Server is not running.');
       console.log('Use the `start` command to start the server.');
@@ -39,14 +27,14 @@ parser
   .command('start')
   .description('Starts the server (only if it is not already running)')
   .action(function(command){
-    var pid = checkPidFile();
+    var pid = getProcessPid();
     if(pid){
       console.log('Hostmatch Routing Server is already running at PID: ' + pid + '.');
       return;
     }
     var spawn = require('child_process').spawn;
-    var out = fs.openSync('./out.log', 'a');
-    var err = fs.openSync('./out.log', 'a');
+    var out = fs.openSync(__dirname + '/out.log', 'a');
+    var err = fs.openSync(__dirname + '/out.log', 'a');
 
     var child = spawn(
       process.execPath,
@@ -71,7 +59,7 @@ parser
   .command('stop')
   .description('Stops the server (only if it is running)')
   .action(function(command){
-    var pid = checkPidFile();
+    var pid = getProcessPid();
     if(!pid){
       console.log('Unable to find the PID file.');
       console.log('Are you sure the server is running?');
