@@ -2,6 +2,7 @@
 var parser = require('commander');
 var hostManager = require('./hostsFileManager');
 var fs = require('fs');
+var path = require('path');
 
 var getProcessPid = require('./utility').getProcessPid;
 
@@ -72,19 +73,27 @@ parser
   .command('list')
   .description('List all the currently active domains')
   .action(function(command){
-    // console.log(command.parent.hosts)
     var domainlist = hostManager(command.parent.hosts).list()
     domainlist.map(function(mapped){
       if(mapped.type == "PORT")
-        console.log(mapped.domain, "-->", "localhost:" + mapped.target)
+        console.log(mapped.domain, "-->", "localhost:" + mapped.target + " (PORT)");
+      else if(mapped.type == "DIR")
+        console.log(mapped.domain, "-->", mapped.target + " (DIR)");
     })
   })
 
 parser
-  .command('add <domain> <port>')
-  .description('Add a new [domain] matched to [port]')
-  .action(function(domain, port, command){
-    hostManager(command.parent.hosts).add(domain, "PORT", port);
+  .command('add <domain> <target>')
+  .description('Add a new [domain] matched to [target]. [target] can be either a port number or a directory path')
+  .action(function(domain, target, command){
+    var type = "DIR";
+    if(target.match(/^\d+$/)){
+      type = "PORT";
+    }else{
+      type = "DIR";
+      target = path.resolve(process.cwd(), target);
+    }
+    hostManager(command.parent.hosts).add(domain, type, target);
   })
 
 parser

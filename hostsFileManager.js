@@ -28,37 +28,21 @@ var hostsFileManager = function(filename){
       this.read();
       var validDomains = content
         .filter(function(line){
-          return line.startsWith('127.0.0.1')
+          return  line.startsWith('127.0.0.1') &&
+                  line.split('#').length != 1 &&
+                  line.split('#')[0].trim().split(/\s+/).length == 2 &&
+                  line.split('#')[1].trim().split(/\s+/).length >= 2 &&
+                  ["PORT", "DIR"].indexOf(line.split('#')[1].trim().split(/\s+/)[0]) != -1
         })
         .map(function(line){
           var mapped = {}
           components = line.split('#')
-          if(components.length == 1){
-            // definitely not valid entry for hostmatch
-            return false;
-          }
           match = components[0].trim().split(/\s+/)
-          if(match.length != 2){
-            //valid hosts file entry but not valid hostmatch entry
-            return false;
-          }else{
-            mapped.domain = match[1]
-          }
+          mapped.domain = match[1]
           matched = components[1].trim().split(/\s+/)
-          if(matched.length != 2){
-            //valid hosts file entry but not valid hostmatch entry
-            return false;
-          }
-          if(["PORT"].indexOf(matched[0].trim().toUpperCase()) != -1){
-            mapped.type = matched[0].trim().toUpperCase()
-          }else{
-            return false;
-          }
-          mapped.target = matched[1].trim();
+          mapped.type = matched[0].trim().toUpperCase()
+          mapped.target = components[1].trim().split(/\s/).splice(1).join(' ');
           return mapped;
-        })
-        .filter(function(mapped){
-          return mapped != false;
         })
       return validDomains;
     },

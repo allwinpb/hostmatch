@@ -1,6 +1,8 @@
 var parser = require('commander');
 var fs = require('fs');
 var httpProxy = require('http-proxy').createProxyServer({});
+var serveStatic = require('serve-static');
+var finalhandler = require('finalhandler');
 
 parser
   .version('0.1.0')
@@ -10,8 +12,11 @@ parser
 var hostManager = require('./hostsFileManager.js')(parser.hosts);
 
 var http = require('http');
+var path = require('path');
 
 var matches;
+
+var staticServers = {};
 
 function refreshHosts(){
   matches = hostManager.domains();
@@ -31,6 +36,17 @@ var router = http.createServer(function(req, res){
         res.end('ERROR: Unable to access local webserver at port ' + port);
       });
       // console.log(req.headers.host + " --> " + 'localhost:' + port);
+    }else if(matches[req.headers.host].type == "DIR"){
+      var rootDir = matches[req.headers.host].target;
+      if(rootDir in staticServers){
+      }else{
+        staticServers[rootDir] = serveStatic(rootDir, {
+          index: ['index.html', 'index.htm'],
+          fallthrough: true
+        });
+      }
+      var done = finalhandler(req, res);
+      staticServers[rootDir](req, res, done);
     }
   }else{
     res.end(req.headers.host);
