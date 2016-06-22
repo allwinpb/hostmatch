@@ -1,6 +1,6 @@
 {
   "name": "hostmatch",
-  "version": "0.1.2",
+  "version": "0.2.0",
   "description": "Simple developer tool for routing custom domain names to local webservers",
   "main": "hostmatch.js",
   "scripts": {
